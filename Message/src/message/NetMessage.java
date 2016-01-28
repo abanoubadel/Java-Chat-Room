@@ -1,6 +1,5 @@
 package message;
 
-import db.UserAccount;
 import java.io.Serializable;
 import java.util.Vector;
 
