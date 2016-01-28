@@ -3,8 +3,7 @@ package client;
 import client.panels.ContactsPanel;
 import client.panels.SignupPanel;
 import client.panels.loginPanel;
-import java.awt.CardLayout;
-import javax.swing.JPanel;
+import java.awt.CardLayout;  
 
 /**
  *

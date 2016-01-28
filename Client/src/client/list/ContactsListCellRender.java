@@ -9,11 +9,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JTree;
 import javax.swing.ListCellRenderer;
 import javax.swing.border.Border;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeCellRenderer;
 
 public class ContactsListCellRender extends javax.swing.JPanel implements ListCellRenderer<Object> {
 

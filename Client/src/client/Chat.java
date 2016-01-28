@@ -1,6 +1,6 @@
 package client;
 
-import java.util.Vector;
+import java.util.Vector; 
 import message.NetMessage;
 
 /**

@@ -1,6 +1,5 @@
 package client.list;
 
-import db.UserAccount;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.swing.AbstractListModel;
