@@ -1,18 +1,11 @@
 package server;
 
-import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
-import com.sun.java.swing.plaf.motif.MotifLookAndFeel;
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 import server.list.ServerListDataModel;
-import db.UserAccount;
+import db.UserAccount;   
 import handlers.DBHandler;
 import handlers.ServerSocketHandler;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import server.list.ServerListCellRender;
 
 /**
