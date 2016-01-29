@@ -67,14 +67,19 @@ public class ClientHandler extends Thread {
 
                     switch (netm.getType()) {
                         case LOGIN:
-                            validateLogin((LoginToken) netm.getData());
+                            if (validateLogin((LoginToken) netm.getData())) {
+                                broadcastContactChange(new NetMessage(NetMessage.NetMessageType.UPDATE_CONTACT_LIST, new UserAccount(account), UserAccount.UNAVILABLE));
+                            }
                             break;
                         case DISCONNECT:
+                            int oldAccountState = account.getStatus();
                             logout();
+                            broadcastContactChange(new NetMessage(NetMessage.NetMessageType.UPDATE_CONTACT_LIST, new UserAccount(account), oldAccountState));
                             return;
                         case MESSAGE: {
-                            //diff types waittttt
+                            //diff types watch
                             Vector<Integer> receiverList = netm.getReceiver();
+                            netm.setAttribute(account);
                             if (receiverList == null) {
                                 broadcastMessageToAll(netm);
                             } else {
@@ -90,8 +95,10 @@ public class ClientHandler extends Thread {
 
                             break;
                         case STATE_CHANGE:
+                            int oldAccountStatus = account.getStatus();
                             account.setStatus((int) netm.getData());
                             handler.updateUserStatus(account);
+                            broadcastContactChange(new NetMessage(NetMessage.NetMessageType.UPDATE_CONTACT_LIST, new UserAccount(account), oldAccountStatus));
                             break;
                         case VALIDATE_EMAIL:
                             boolean emailVal = handler.validateMail((String) netm.getData());
@@ -114,7 +121,7 @@ public class ClientHandler extends Thread {
 
     }
 
-    private void validateLogin(LoginToken token) {
+    private boolean validateLogin(LoginToken token) {
         UserAccount loginValue = handler.login(token);
 
         if (loginValue != null) {
@@ -126,8 +133,12 @@ public class ClientHandler extends Thread {
 
             unauthUsers.remove(this);
             clients.put(account.getId(), this);
+
+            return true;
         } else {
             sendMessage(new NetMessage(NetMessage.NetMessageType.AUTH_FAIL));
+
+            return false;
         }
     }
 
@@ -143,6 +154,15 @@ public class ClientHandler extends Thread {
     private void broadcastMessageToAll(NetMessage msg) {
         for (ClientHandler client : clients.values()) {
             client.sendMessage(msg);
+        }
+
+    }
+
+    private void broadcastContactChange(NetMessage msg) {
+        for (ClientHandler client : clients.values()) {
+            if (!client.account.equals(account)) {
+                client.sendMessage(msg);
+            }
         }
 
     }
@@ -178,14 +198,18 @@ public class ClientHandler extends Thread {
         sendMessage(new NetMessage(NetMessage.NetMessageType.DISCONNECT));
     }
 
-    private void sendDisconnectToAll() {
+    public static void sendDisconnectToAll() {
         for (ClientHandler client : clients.values()) {
             client.sendMessage(new NetMessage(NetMessage.NetMessageType.DISCONNECT));
+            client.logout();
         }
+        clients.clear();
 
         for (int i = 0; i < unauthUsers.size(); i++) {
             unauthUsers.elementAt(i).sendMessage(new NetMessage(NetMessage.NetMessageType.DISCONNECT));
         }
+        unauthUsers.clear();
+
     }
 
 }

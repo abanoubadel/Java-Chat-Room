@@ -3,7 +3,10 @@ package client;
 import client.panels.ContactsPanel;
 import client.panels.SignupPanel;
 import client.panels.loginPanel;
-import java.awt.CardLayout;  
+import com.alee.managers.notification.NotificationIcon;
+import com.alee.managers.notification.NotificationManager;
+import com.alee.managers.notification.WebNotification;
+import java.awt.CardLayout;
 
 /**
  *
@@ -13,9 +16,16 @@ public class ChatApplication extends javax.swing.JFrame {
 
     private CardLayout layout;
     private ClientSocketConnection clientSocketConnection;
+    private WebNotification notification;
 
     public ChatApplication() {
         clientSocketConnection = new ClientSocketConnection(this);
+
+        notification = new WebNotification();
+        notification.setClickToClose(true);
+        notification.setDisplayTime(3000);
+        notification.setIcon(NotificationIcon.information);
+        NotificationManager.setLocation(NotificationManager.SOUTH_EAST);
 
         initComponents();
 
@@ -36,6 +46,7 @@ public class ChatApplication extends javax.swing.JFrame {
         ;
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setLocationByPlatform(true);
         setMinimumSize(new java.awt.Dimension(400, 699));
         setPreferredSize(new java.awt.Dimension(400, 670));
         setResizable(false);
@@ -74,6 +85,11 @@ public class ChatApplication extends javax.swing.JFrame {
 
     public ContactsPanel getContactsPanel() {
         return contactsPanel;
+    }
+
+    public void viewNotification(String text) {
+        notification.setContent(text);
+        NotificationManager.showNotification(notification);
     }
 
     public static void main(String args[]) {

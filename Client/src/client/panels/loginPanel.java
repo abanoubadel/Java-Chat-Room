@@ -60,6 +60,7 @@ public class loginPanel extends javax.swing.JPanel {
         errorLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         errorLabel.setText("error text");
         errorLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        errorLabel.setVisible(false);
 
         jLabel2.setFont(new java.awt.Font("Cantarell", 0, 18)); // NOI18N
         jLabel2.setText("Password");
@@ -140,7 +141,6 @@ public class loginPanel extends javax.swing.JPanel {
             errorLabel.setText("Missing Fields");
         }
 
-
     }//GEN-LAST:event_loginButtonActionPerformed
 
     private void signupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signupButtonActionPerformed
@@ -148,7 +148,7 @@ public class loginPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_signupButtonActionPerformed
 
     private void PasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordFieldActionPerformed
-        // TODO add your handling code here:
+        loginButtonActionPerformed(evt);
     }//GEN-LAST:event_PasswordFieldActionPerformed
 
     public void startWaiting() {
@@ -167,13 +167,15 @@ public class loginPanel extends javax.swing.JPanel {
 
     public void setErrorText(String text) {
         errorLabel.setText(text);
+        errorLabel.setVisible(true);
     }
 
     public void clearData() {
         PasswordField.setText("");
         userTextField.setText("");
+        errorLabel.setVisible(false);
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPasswordField PasswordField;
     private javax.swing.JLabel errorLabel;

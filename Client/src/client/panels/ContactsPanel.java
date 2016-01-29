@@ -5,8 +5,10 @@ import client.ChatApplication;
 import client.list.ContactsListCellRender;
 import client.list.ContactsListDataModel;
 import db.UserAccount;
+import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.function.Consumer;
 import javax.swing.ImageIcon;
 
 /**
@@ -17,7 +19,7 @@ public class ContactsPanel extends javax.swing.JPanel {
 
     private ContactsListDataModel contactsListDataModel;
     private ChatApplication parent;
-    private ArrayList<UserAccount> allContacts = new ArrayList<>();
+
     private Chat defalutChat;
     private ArrayList<Chat> chats = new ArrayList<>();
 
@@ -25,22 +27,8 @@ public class ContactsPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public void startTimer() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    parent.getClientSocketConnection().sendGetContactList();
-
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-
-            }
-        }).start();
+    public void getInitContacts() {
+        parent.getClientSocketConnection().sendGetContactList();
     }
 
     public ContactsPanel(ChatApplication parent) {
@@ -58,7 +46,7 @@ public class ContactsPanel extends javax.swing.JPanel {
         myStateLabel = new javax.swing.JLabel();
         StateComboBox = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        contactsList = new javax.swing.JList<>();
         defaultChatRoomButton = new javax.swing.JButton();
 
         userImageLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/1-1.PNG"))); // NOI18N
@@ -75,9 +63,14 @@ public class ContactsPanel extends javax.swing.JPanel {
             }
         });
 
-        jList1.setModel(contactsListDataModel = new ContactsListDataModel());
-        jList1.setCellRenderer(new ContactsListCellRender ());
-        jScrollPane1.setViewportView(jList1);
+        contactsList.setModel(contactsListDataModel = new ContactsListDataModel());
+        contactsList.setCellRenderer(new ContactsListCellRender ());
+        contactsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                contactsListMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(contactsList);
 
         defaultChatRoomButton.setText("Show Shat Room");
         defaultChatRoomButton.addActionListener(new java.awt.event.ActionListener() {
@@ -128,67 +121,63 @@ public class ContactsPanel extends javax.swing.JPanel {
 
     private void StateComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_StateComboBoxItemStateChanged
         ImageIcon imageIcon = null;
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            switch (StateComboBox.getSelectedIndex()) {
+                case 0:
+                    imageIcon = new ImageIcon(getClass().getResource("/resources/ava.PNG"));
+                    parent.getClientSocketConnection().sendChangeState(UserAccount.AVAILABLE);
+                    break;
+                case 1:
+                    imageIcon = new ImageIcon(getClass().getResource("/resources/red.PNG"));
+                    parent.getClientSocketConnection().sendChangeState(UserAccount.BUSY);
+                    break;
+                case 2:
+                    imageIcon = new ImageIcon(getClass().getResource("/resources/gray.PNG"));
+                    parent.getClientSocketConnection().sendChangeState(UserAccount.HIDDEN);
+            }
 
-        switch (StateComboBox.getSelectedIndex()) {
-            case 0:
-                imageIcon = new ImageIcon(getClass().getResource("/resources/ava.PNG"));
-                parent.getClientSocketConnection().sendChangeState(UserAccount.AVAILABLE);
-                break;
-            case 1:
-                imageIcon = new ImageIcon(getClass().getResource("/resources/red.PNG"));
-                parent.getClientSocketConnection().sendChangeState(UserAccount.BUSY);
-                break;
-            case 2:
-                imageIcon = new ImageIcon(getClass().getResource("/resources/gray.PNG"));
-                parent.getClientSocketConnection().sendChangeState(UserAccount.HIDDEN);
+            myStateLabel.setIcon(imageIcon);
         }
-
-        myStateLabel.setIcon(imageIcon);
     }//GEN-LAST:event_StateComboBoxItemStateChanged
 
     private void defaultChatRoomButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_defaultChatRoomButtonActionPerformed
         defalutChat.setVisible(true);
     }//GEN-LAST:event_defaultChatRoomButtonActionPerformed
 
-    public void updateContactList() {
-        Vector<Object> ava = new Vector<>();
-        Vector<Object> bus = new Vector<>();
-        Vector<Object> unav = new Vector<>();
+    private void contactsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_contactsListMouseClicked
+        if (evt.getClickCount() == 2 && contactsList.getSelectedValue() instanceof UserAccount) {
+            UserAccount account = ((UserAccount) contactsList.getSelectedValue());
 
-        for (int i = 0; i < allContacts.size(); i++) {
-            UserAccount con = allContacts.get(i);
+            if (account.getStatus() == UserAccount.AVAILABLE || account.getStatus() == UserAccount.BUSY) {
+                Vector<Integer> id = new Vector<>();
+                id.add(account.getId());
 
-            switch (con.getStatus()) {
-                case UserAccount.AVAILABLE:
-                    ava.add(con);
-                    break;
-                case UserAccount.BUSY:
-                    bus.add(con);
-                    break;
-                default:
-                    unav.add(con);
+                Chat room = isOpended(id);
+                if (room == null) {
+                    Chat chat = new Chat(parent, id);
+                    chats.add(chat);
+
+                    chat.setVisible(true);
+                } else {
+                    room.setVisible(true);
+                }
             }
         }
-        contactsListDataModel.clear();
+    }//GEN-LAST:event_contactsListMouseClicked
 
-        contactsListDataModel.addToList("    available");
-        contactsListDataModel.addAll(ava);
-        contactsListDataModel.addToList("      busy");
-        contactsListDataModel.addAll(bus);
-        contactsListDataModel.addToList("    unavailable");
-        contactsListDataModel.addAll(unav);
-        //refresh
-        contactsListDataModel.reload();
-        //clear
-        allContacts.clear();
+    public Chat isOpended(Vector<Integer> ids) {
+        for (int i = 0; i < chats.size(); i++) {
+            Chat room = chats.get(i);
+            if (room.getReceveList().containsAll(ids)) {
+                return room;
+            }
+        }
+
+        return null;
     }
 
-    public void setAllContacts(ArrayList<UserAccount> allContacts) {
-        this.allContacts = allContacts;
-    }
-
-    public ArrayList<UserAccount> getAllContacts() {
-        return allContacts;
+    public ContactsListDataModel getContactsListDataModel() {
+        return contactsListDataModel;
     }
 
     public void setUserFullName(String name) {
@@ -203,8 +192,19 @@ public class ContactsPanel extends javax.swing.JPanel {
         defalutChat = new Chat(parent);
     }
 
-    public void distroyDefalutChatRoom() {
+    public void distroyAllChatRoom() {
+        defalutChat.setVisible(false);
+        defalutChat.invalidate();
         defalutChat = null;
+
+        chats.forEach(new Consumer<Chat>() {
+            @Override
+            public void accept(Chat t) {
+                t.setVisible(false);
+                t.invalidate();
+            }
+        });
+        chats.clear();
     }
 
     public ArrayList<Chat> getChats() {
@@ -212,20 +212,24 @@ public class ContactsPanel extends javax.swing.JPanel {
     }
 
     public void switchMessage(String msg, Vector<Integer> receiver) {
-        for (int i = 0; i < chats.size(); i++) {
-            Chat room = chats.get(i);
-            if (room.getReceveList().containsAll(receiver)) {
-                room.appenMessage(msg);
-                return;
-            }
+        Chat room = isOpended(receiver);
+
+        if (room != null) {
+            room.appenMessage(msg);
+        } else {
+            //case not opened
+            Chat chat = new Chat(parent, receiver);
+            chats.add(chat);
+            chat.appenMessage(msg);
+            chat.setVisible(true);
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel NameLabel;
     private javax.swing.JComboBox<String> StateComboBox;
+    private javax.swing.JList<Object> contactsList;
     private javax.swing.JButton defaultChatRoomButton;
-    private javax.swing.JList<Object> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel myStateLabel;
     private javax.swing.JLabel userImageLabel;

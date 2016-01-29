@@ -8,10 +8,10 @@ import java.io.Serializable;
  */
 public class UserAccount implements Serializable {
 
-    transient public static final int UNAVILABLE = 0;
-    transient public static final int BUSY = 1;
-    transient public static final int AVAILABLE = 2;
-    transient public static final int HIDDEN = 3;
+    public static final int UNAVILABLE = 0;
+    public static final int BUSY = 1;
+    public static final int AVAILABLE = 2;
+    public static final int HIDDEN = 3;
 
     private int id;
     private String firstName;
@@ -24,7 +24,18 @@ public class UserAccount implements Serializable {
     public UserAccount() {
     }
 
-    public UserAccount(int id, String firstName, String lastName, String userName, String password, String email, int status) {
+    public UserAccount(UserAccount account) {
+        this.id = account.id;
+        this.firstName = account.firstName;
+        this.lastName = account.lastName;
+        this.userName = account.userName;
+        this.password = account.password;
+        this.email = account.email;
+        this.status = account.status;
+    }
+
+    public UserAccount(int id, String firstName, String lastName,
+            String userName, String password, String email, int status) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -84,6 +95,24 @@ public class UserAccount implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof UserAccount) {
+            return id == ((UserAccount) obj).id;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return id + "";
     }
 
 }

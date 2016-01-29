@@ -83,7 +83,7 @@ public class ContactsListCellRender extends javax.swing.JPanel implements ListCe
     @Override
     public Component getListCellRendererComponent(JList<? extends Object> list, Object value, int index, boolean selected, boolean cellHasFocus) {
         JComponent returnValue = null;
-       
+
         if (value instanceof UserAccount) {
             UserAccount account = (UserAccount) value;
             nameLabel.setText(account.getFirstName() + " " + account.getLastName());
@@ -117,7 +117,6 @@ public class ContactsListCellRender extends javax.swing.JPanel implements ListCe
 
         return returnValue;
     }
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel imageLabel;

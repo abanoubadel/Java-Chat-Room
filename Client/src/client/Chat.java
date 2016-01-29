@@ -1,6 +1,6 @@
 package client;
 
-import java.util.Vector; 
+import java.util.Vector;
 import message.NetMessage;
 
 /**
@@ -104,7 +104,6 @@ public class Chat extends javax.swing.JFrame {
     private void msgTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msgTextFieldActionPerformed
         sendButtonActionPerformed(evt);
     }//GEN-LAST:event_msgTextFieldActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea chatTextArea;

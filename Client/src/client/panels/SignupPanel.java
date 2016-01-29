@@ -168,7 +168,6 @@ public class SignupPanel extends javax.swing.JPanel {
         parent.switchView("contacts");
     }//GEN-LAST:event_createButtonActionPerformed
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton createButton;
     private javax.swing.JLabel errorLabel;
