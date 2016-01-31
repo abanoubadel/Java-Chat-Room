@@ -38,12 +38,39 @@ public class ChatApplication extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        menuBar = new javax.swing.JMenuBar();
+        messengerMenu = new javax.swing.JMenu();
+        signoutMenuItem = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        exitMenuItem = new javax.swing.JMenuItem();
+        chatMenu = new javax.swing.JMenu();
+        createChatMenuItem = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
         signupPanel = new SignupPanel(this)
         ;
         contactsPanel = new ContactsPanel(this)
         ;
         loginPanel = new loginPanel(this)
         ;
+
+        messengerMenu.setText("File");
+
+        signoutMenuItem.setLabel("Signout");
+        messengerMenu.add(signoutMenuItem);
+        messengerMenu.add(jSeparator2);
+
+        exitMenuItem.setLabel("Exit");
+        messengerMenu.add(exitMenuItem);
+
+        menuBar.add(messengerMenu);
+
+        chatMenu.setText("Edit");
+
+        createChatMenuItem.setLabel("Open New Chat Room");
+        chatMenu.add(createChatMenuItem);
+        chatMenu.add(jSeparator1);
+
+        menuBar.add(chatMenu);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLocationByPlatform(true);
@@ -92,6 +119,14 @@ public class ChatApplication extends javax.swing.JFrame {
         NotificationManager.showNotification(notification);
     }
 
+    public void viewMenuBar() {
+        this.setJMenuBar(menuBar);
+    }
+
+    public void hideMenuBar() {
+        this.setJMenuBar(menuBar);
+    }
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -101,8 +136,16 @@ public class ChatApplication extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu chatMenu;
     private client.panels.ContactsPanel contactsPanel;
+    private javax.swing.JMenuItem createChatMenuItem;
+    private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     private client.panels.loginPanel loginPanel;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenu messengerMenu;
+    private javax.swing.JMenuItem signoutMenuItem;
     private client.panels.SignupPanel signupPanel;
     // End of variables declaration//GEN-END:variables
 }

@@ -54,6 +54,7 @@ public class ClientSocketConnection extends Thread {
                                 chatApplication.getContactsPanel().getInitContacts();
                                 chatApplication.getContactsPanel().createDefalutChatRoom();
                                 chatApplication.viewNotification("Welcom " + name + " \nHave a nice Day :D");
+                                chatApplication.viewMenuBar();
                                 chatApplication.switchView("contacts");
                                 break;
                             case AUTH_FAIL:
@@ -84,6 +85,7 @@ public class ClientSocketConnection extends Thread {
                                 //close opened chats
                                 chatApplication.getContactsPanel().distroyAllChatRoom();
                                 chatApplication.getLoginPanel().stopWaiting();
+                                chatApplication.hideMenuBar();
                                 chatApplication.switchView("login");
                                 throw new IOException("restart connection");
                             case MESSAGE: {

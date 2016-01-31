@@ -27,9 +27,9 @@ public class DBHandler {
     private PreparedStatement validateUserName;
 
     public DBHandler() throws SQLException {
-        DriverManager.registerDriver(new Driver());
+        DriverManager.registerDriver(new org.gjt.mm.mysql.Driver());
 
-        connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Chat", "postgres", "postgres");
+        connection = DriverManager.getConnection("jdbc:mysql://localhost/Chat", "root", "");
 
         loginCheck = connection.prepareStatement("SELECT * FROM account WHERE user_name = ? and password = ? ;");
         createUser = connection.prepareStatement("INSERT INTO account (first_name, last_name, user_name, password, email, status) VALUES (?, ?, ?, ?, ?, ?) ");

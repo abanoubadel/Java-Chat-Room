@@ -1,6 +1,15 @@
 package client;
 
+import com.sun.java.accessibility.util.AWTEventMonitor;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import message.NetMessage;
 
 /**
@@ -30,6 +39,7 @@ public class Chat extends javax.swing.JFrame {
 
     public void appenMessage(String msg) {
         chatTextArea.append(msg + "\n");
+        
     }
 
     public void disableSend() {
@@ -44,19 +54,24 @@ public class Chat extends javax.swing.JFrame {
         chatTextArea = new javax.swing.JTextArea();
         msgTextField = new javax.swing.JTextField();
         sendButton = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setTitle("Chat APP");
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         chatTextArea.setEditable(false);
         chatTextArea.setColumns(20);
         chatTextArea.setRows(5);
         jScrollPane1.setViewportView(chatTextArea);
 
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 12, 438, 190));
+
         msgTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 msgTextFieldActionPerformed(evt);
             }
         });
+        getContentPane().add(msgTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 235, 353, 52));
 
         sendButton.setText("Send");
         sendButton.addActionListener(new java.awt.event.ActionListener() {
@@ -64,32 +79,16 @@ public class Chat extends javax.swing.JFrame {
                 sendButtonActionPerformed(evt);
             }
         });
+        getContentPane().add(sendButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(377, 235, 73, 52));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(msgTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(sendButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(msgTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sendButton, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
+        jButton1.setText("Save Session");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, -1, -1));
+        jButton1.getAccessibleContext().setAccessibleName("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -105,8 +104,39 @@ public class Chat extends javax.swing.JFrame {
         sendButtonActionPerformed(evt);
     }//GEN-LAST:event_msgTextFieldActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        //File myFile= new File("//home//iman//ITI_Study//Java //Project//SaveSession.txt');
+            
+            JFileChooser fc = new JFileChooser();
+            if(fc.showSaveDialog(this) ==JFileChooser.APPROVE_OPTION)
+                {
+                    
+                    String path = fc.getSelectedFile().getPath();
+                    
+                try {
+                    FileOutputStream fos;
+                    fos = new FileOutputStream(path);
+                     byte[] b = chatTextArea.getText().getBytes();
+                     fos.write(b);
+                     fos.close();
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                    
+                    
+                //Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+                
+                   
+                }
+                
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea chatTextArea;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField msgTextField;
     private javax.swing.JButton sendButton;
